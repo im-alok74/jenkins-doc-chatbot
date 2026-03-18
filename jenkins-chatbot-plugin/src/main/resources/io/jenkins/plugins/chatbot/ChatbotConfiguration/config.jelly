@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+  <div>
+    <h2>Chatbot Plugin Configuration</h2>
+    <form method="post">
+      <label for="backendUrl">Backend URL:</label>
+      <input type="text" name="backendUrl" value="${it.backendUrl}" style="width:400px;"/><br/><br/>
+      <label for="apiKey">API Key:</label>
+      <input type="text" name="apiKey" value="${it.apiKey}" style="width:400px;"/><br/><br/>
+      <button type="submit">Save</button>
+      <button type="button" onclick="testConnection()">Test Connection</button>
+    </form>
+    <div id="test-result" style="margin-top:10px;"></div>
+    <script type="text/javascript">
+      function testConnection() {
+        const url = document.querySelector('input[name="backendUrl"]').value;
+        const key = document.querySelector('input[name="apiKey"]').value;
+        fetch(url + '/api/health', {
+          headers: { 'Authorization': 'Bearer ' + key }
+        }).then(resp => resp.json()).then(data => {
+          document.getElementById('test-result').innerHTML = 'Status: ' + data.status + ', Version: ' + data.version;
+        }).catch(() => {
+          document.getElementById('test-result').innerHTML = 'Connection failed.';
+        });
+      }
+    </script>
+  </div>
+</j:jelly>

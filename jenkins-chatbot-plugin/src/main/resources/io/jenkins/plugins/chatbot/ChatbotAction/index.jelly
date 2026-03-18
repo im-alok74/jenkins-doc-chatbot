@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+  <div class="chatbot-container">
+    <h2>Jenkins AI Assistant</h2>
+    <div id="chat-window" style="height:300px;overflow-y:auto;border:1px solid #ccc;padding:10px;background:#f9f9f9;"></div>
+    <div style="margin-top:10px;">
+      <input id="chat-input" type="text" style="width:80%;padding:5px;" placeholder="Type your question..." />
+      <button id="send-btn" style="padding:5px 10px;">Send</button>
+      <span id="typing-indicator" style="display:none;margin-left:10px;">Assistant is typing...</span>
+    </div>
+    <script type="text/javascript">
+      let chatHistory = [];
+      const jobName = "${it.getJobName()}";
+      const buildId = "${it.getBuildId()}";
+      const backendUrl = "${descriptor.backendUrl}";
+      const apiKey = "${descriptor.apiKey}";
+      function appendMessage(role, content) {
+        const chatWindow = document.getElementById('chat-window');
+        const msgDiv = document.createElement('div');
+        msgDiv.innerHTML = `<b>${role}:</b> ${content}`;
+        chatWindow.appendChild(msgDiv);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      }
+      document.getElementById('send-btn').onclick = async function() {
+        const input = document.getElementById('chat-input');
+        const query = input.value;
+        if (!query) return;
+        appendMessage('User', query);
+        chatHistory.push({role: 'user', content: query});
+        input.value = '';
+        document.getElementById('typing-indicator').style.display = 'inline';
+        const context = {job_name: jobName, build_id: buildId};
+        const resp = await fetch(backendUrl + '/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + apiKey
+          },
+          body: JSON.stringify({query, context, conversation_history: chatHistory})
+        });
+        const data = await resp.json();
+        appendMessage('Assistant', data.response);
+        chatHistory.push({role: 'assistant', content: data.response});
+        document.getElementById('typing-indicator').style.display = 'none';
+      };
+    </script>
+    <style>
+      .chatbot-container { max-width:600px; margin:auto; background:#fff; border-radius:8px; box-shadow:0 2px 8px #ccc; padding:20px; }
+      #chat-window div { margin-bottom:8px; }
+      #chat-input { border-radius:4px; border:1px solid #ccc; }
+      #send-btn { border-radius:4px; background:#0072c6; color:#fff; border:none; }
+    </style>
+  </div>
+</j:jelly>
