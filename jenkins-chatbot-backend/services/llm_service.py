@@ -3,9 +3,9 @@ import httpx
 from typing import List, Optional, Dict, Any
 from langchain_openai import ChatOpenAI
 from langchain_community.llms import Ollama
-from langchain_community.llms import GoogleGenAI
-from langchain.schema import HumanMessage, SystemMessage, AIMessage
-from jenkins_chatbot_backend.config import settings
+import google.genai as genai
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+from config import settings
 
 JENKINS_SYSTEM_PROMPT = (
     "You are an expert Jenkins CI/CD assistant. You help developers with pipeline creation, build failure debugging, plugin selection, and Jenkins configuration. "
@@ -58,17 +58,13 @@ class LLMService:
 
     async def _gemini_chat(self, messages: List[Dict[str, Any]]) -> Dict[str, Any]:
         try:
-            chat = GoogleGenAI(api_key=self.gemini_api_key, model="gemini-pro", temperature=0.2)
-            lc_messages = []
-            for msg in messages:
-                if msg["role"] == "system":
-                    lc_messages.append(SystemMessage(content=msg["content"]))
-                elif msg["role"] == "user":
-                    lc_messages.append(HumanMessage(content=msg["content"]))
-                elif msg["role"] == "assistant":
-                    lc_messages.append(AIMessage(content=msg["content"]))
-            response = await chat.apredict_messages(lc_messages)
-            return {"response": response.content, "sources": [], "confidence": 0.90}
+            if not self.gemini_api_key:
+                return {"response": "Gemini API key not set.", "sources": [], "confidence": 0.0}
+            genai.configure(api_key=self.gemini_api_key)
+            model = genai.GenerativeModel(self.gemini_model if hasattr(self, 'gemini_model') else "gemini-2.5-pro")
+            prompt = "\n".join([msg["content"] for msg in messages])
+            response = await model.generate_content_async(prompt)
+            return {"response": response.text, "sources": [], "confidence": 0.90}
         except Exception as e:
             return {"response": f"Gemini error: {str(e)}", "sources": [], "confidence": 0.0}
 

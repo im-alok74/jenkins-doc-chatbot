@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
-from jenkins_chatbot_backend.config import settings
+from config import settings
 
 JENKINS_DOC_URLS = [
     "https://www.jenkins.io/doc/book/pipeline/",

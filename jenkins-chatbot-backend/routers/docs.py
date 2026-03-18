@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Query, Request
 from fastapi.responses import JSONResponse
-from jenkins_chatbot_backend.models.schemas import DocSearchResponse
-from jenkins_chatbot_backend.services.rag_service import RAGService
+from models.schemas import DocSearchResponse
+from services.rag_service import RAGService
 import logging
 
 router = APIRouter()

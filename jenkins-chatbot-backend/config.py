@@ -1,17 +1,16 @@
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Optional
 
 class Settings(BaseSettings):
-    openai_api_key: str = Field(..., env="OPENAI_API_KEY")
-    gemini_api_key: str = Field(..., env="GEMINI_API_KEY")
-    ollama_base_url: str = Field("http://localhost:11434", env="OLLAMA_BASE_URL")
-    llm_provider: str = Field("openai", env="LLM_PROVIDER")
-    jenkins_url: str = Field("http://localhost:8080", env="JENKINS_URL")
-    jenkins_user: str = Field("admin", env="JENKINS_USER")
-    jenkins_token: str = Field(..., env="JENKINS_TOKEN")
-    faiss_index_path: str = Field("data/faiss_index", env="FAISS_INDEX_PATH")
+    openai_api_key: Optional[str] = None
+    gemini_api_key: Optional[str] = None
+    ollama_base_url: str = "http://localhost:11434"
+    llm_provider: str = "openai"
+    jenkins_url: str = "http://localhost:8080"
+    jenkins_user: str = "admin"
+    jenkins_token: Optional[str] = None
+    faiss_index_path: str = "data/faiss_index"
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 settings = Settings()

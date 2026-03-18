@@ -3,7 +3,7 @@ import faiss
 import numpy as np
 from typing import List, Dict, Any
 from sentence_transformers import SentenceTransformer
-from jenkins_chatbot_backend.config import settings
+from config import settings
 
 class RAGService:
     def __init__(self):

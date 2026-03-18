@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from jenkins_chatbot_backend.routers import chat, logs, plugins, docs
-from jenkins_chatbot_backend.services.rag_service import RAGService
-from jenkins_chatbot_backend.models.schemas import HealthResponse
+from routers import chat, logs, plugins, docs
+from services.rag_service import RAGService
+from models.schemas import HealthResponse
 import logging
 
 app = FastAPI(title="Jenkins AI Chatbot Backend", version="1.0.0")

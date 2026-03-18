@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, Request
 from fastapi.responses import JSONResponse
-from jenkins_chatbot_backend.models.schemas import PluginRecommendation, PluginRecommendationResponse
+from models.schemas import PluginRecommendation, PluginRecommendationResponse
 import logging
 
 router = APIRouter()

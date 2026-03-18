@@ -1,6 +1,6 @@
 import httpx
 from typing import Optional
-from jenkins_chatbot_backend.config import settings
+from config import settings
 
 class ContextService:
     def __init__(self):

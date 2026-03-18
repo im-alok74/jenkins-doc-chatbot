@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from jenkins_chatbot_backend.models.schemas import ChatRequest, ChatResponse
-from jenkins_chatbot_backend.services.llm_service import LLMService
-from jenkins_chatbot_backend.services.rag_service import RAGService
+from models.schemas import ChatRequest, ChatResponse
+from services.llm_service import LLMService
+from services.rag_service import RAGService
 import logging
 
 router = APIRouter()
